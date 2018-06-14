@@ -11,7 +11,7 @@ import UIKit
 
 //String类扩展
 public extension String {
-    
+
     /**
      计算文字的宽度
      
@@ -29,16 +29,15 @@ public extension String {
             context: nil)
         return boundingBox.size
     }
-    
+
     /// 字符串长度
     var ch_length: Int {
-        return self.count;
+        return self.count
     }
 }
 
-
 public extension UIColor {
-    
+
     /**
      16进制表示颜色
      
@@ -52,11 +51,11 @@ public extension UIColor {
                        blue: CGFloat(hex & 0x0000FF) / 255.0,
                        alpha: CGFloat(alpha))
     }
-    
+
 }
 
 public extension Date {
-    
+
     /*!
      * @method 把时间戳转换为用户格式时间
      * @abstract
@@ -74,13 +73,12 @@ public extension Date {
         let formatter = DateFormatter()
         formatter.dateFormat = format
         time = formatter.string(from: confromTimesp)
-        return time;
+        return time
     }
 }
 
-
 public extension CGFloat {
-    
+
     /**
      转化为字符串格式
      
@@ -101,17 +99,17 @@ public extension CGFloat {
 }
 
 public extension Array where Element: Equatable {
-    
+
     subscript (safe index: Int) -> Element? {
         return (0..<count).contains(index) ? self[index] : nil
     }
-    
+
     mutating func ch_removeObject(_ object: Element) {
         if let index = self.index(of: object) {
             self.remove(at: index)
         }
     }
-    
+
     mutating func ch_removeObjectsInArray(_ array: [Element]) {
         for object in array {
             self.ch_removeObject(object)

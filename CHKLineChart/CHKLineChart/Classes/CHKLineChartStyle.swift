@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 
-
 /// 最大最小值显示风格
 ///
 /// - none: 不显示
@@ -17,7 +16,7 @@ import UIKit
 /// - circle: 空心圆风格
 /// - tag: 标签风格
 public enum CHUltimateValueStyle {
-    
+
     case none
     case arrow(UIColor)
     case circle(UIColor, Bool)
@@ -26,85 +25,85 @@ public enum CHUltimateValueStyle {
 
 // MARK: - 图表样式配置类
 open class CHKLineChartStyle {
-    
+
     /// 分区样式配置
     open var sections: [CHSection] = [CHSection]()
-    
+
     /// 要处理的算法
     open var algorithms: [CHChartAlgorithmProtocol] = [CHChartAlgorithmProtocol]()
-    
-    
+
     /// 背景颜色
     open var backgroundColor: UIColor = UIColor.white
-    
+
     /// 显示边线上左下有
     open var borderWidth: (top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat) = (0.5, 0.5, 0.5, 0.5)
-    
+
     /**
      边距
      
      - returns:
      */
     open var padding: UIEdgeInsets!
-    
+
     //字体大小
     open var labelFont: UIFont!
-    
+
     //线条颜色
     open var lineColor: UIColor = UIColor.clear
-    
+
     //文字颜色
     open var textColor: UIColor = UIColor.clear
-    
+
     //选中点的显示的框背景颜色
     open var selectedBGColor: UIColor = UIColor.clear
-    
+
     //选中点的显示的文字颜色
     open var selectedTextColor: UIColor = UIColor.clear
-    
+
     //显示y的位置，默认右边
     open var showYAxisLabel = CHYAxisShowPosition.right
-    
+
     /// 是否把y坐标内嵌到图表仲
     open var isInnerYAxis: Bool = false
-    
+
     //是否可缩放
     open var enablePinch: Bool = true
     //是否可滑动
     open var enablePan: Bool = true
     //是否可点选
     open var enableTap: Bool = true
-    
+
+    open var enableLong: Bool = true
+
     /// 是否显示选中的内容
     open var showSelection: Bool = true
-    
+
     /// 把X坐标内容显示到哪个索引分区上，默认为-1，表示最后一个，如果用户设置溢出的数值，也以最后一个
     open var showXAxisOnSection: Int = -1
-    
+
     /// 是否显示X轴标签
     open var showXAxisLabel: Bool = true
-    
+
     /// 是否显示所有内容
     open var isShowAll: Bool = false
-    
-    
+
     /// 买方深度图层颜色
     open var bidColor: (stroke: UIColor, fill: UIColor, lineWidth: CGFloat) = (.white, .white, 1)
-    
+
     /// 卖方深度图层颜色
     open var askColor: (stroke: UIColor, fill: UIColor, lineWidth: CGFloat) = (.white, .white, 1)
     
     /// 买单居右
     open var bidChartOnDirection:CHKDepthChartOnDirection = .right
-    
+
     public init() {
-        
+
     }
 }
 
 // MARK: - 扩展样式
 public extension CHKLineChartStyle {
-    
+
     //实现一个最基本的样式，开发者可以自由扩展配置样式
     public static var base: CHKLineChartStyle {
         let style = CHKLineChartStyle()
@@ -116,7 +115,7 @@ public extension CHKLineChartStyle {
         style.padding = UIEdgeInsets(top: 32, left: 8, bottom: 4, right: 0)
         style.backgroundColor = UIColor.ch_hex(0x1D1C1C)
         style.showYAxisLabel = .right
-        
+
         //配置图表处理算法
         style.algorithms = [
             CHChartAlgorithm.timeline,
@@ -133,8 +132,11 @@ public extension CHKLineChartStyle {
             CHChartAlgorithm.boll(20, 2),
             CHChartAlgorithm.macd(12, 26, 9),
             CHChartAlgorithm.kdj(9, 3, 3),
+            CHChartAlgorithm.rsi(6),
+            CHChartAlgorithm.rsi(12),
+            CHChartAlgorithm.rsi(24)
         ]
-        
+
         //分区点线样式
         let upcolor = (UIColor.ch_hex(0xF80D1F), true)
         let downcolor = (UIColor.ch_hex(0x1E932B), true)
@@ -146,7 +148,7 @@ public extension CHKLineChartStyle {
         priceSection.hidden = false
         priceSection.ratios = 3
         priceSection.padding = UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
-        
+
         /// 时分线
         let timelineSeries = CHSeries.getTimelinePrice(
             color: UIColor.ch_hex(0xAE475C),
@@ -154,9 +156,9 @@ public extension CHKLineChartStyle {
             showGuide: true,
             ultimateValueStyle: .circle(UIColor.ch_hex(0xAE475C), true),
             lineWidth: 2)
-        
+
         timelineSeries.hidden = true
-        
+
         /// 蜡烛线
         let priceSeries = CHSeries.getCandlePrice(
             upStyle: upcolor,
@@ -165,50 +167,50 @@ public extension CHKLineChartStyle {
             section: priceSection,
             showGuide: true,
             ultimateValueStyle: .arrow(UIColor(white: 0.8, alpha: 1)))
-        
+
         priceSeries.showTitle = true
-        
+
         priceSeries.chartModels.first?.ultimateValueStyle = .arrow(UIColor(white: 0.8, alpha: 1))
-        
+
         let priceMASeries = CHSeries.getPriceMA(
             isEMA: false,
-            num: [5,10,30],
+            num: [5, 10, 30],
             colors: [
                 UIColor.ch_hex(0xDDDDDD),
                 UIColor.ch_hex(0xF9EE30),
-                UIColor.ch_hex(0xF600FF),
+                UIColor.ch_hex(0xF600FF)
                 ],
             section: priceSection)
         priceMASeries.hidden = false
-        
+
         let priceEMASeries = CHSeries.getPriceMA(
             isEMA: true,
-            num: [5,10,30],
+            num: [5, 10, 30],
             colors: [
                 UIColor.ch_hex(0xDDDDDD),
                 UIColor.ch_hex(0xF9EE30),
-                UIColor.ch_hex(0xF600FF),
+                UIColor.ch_hex(0xF600FF)
                 ],
             section: priceSection)
-        
+
         priceEMASeries.hidden = true
-        
+
         let priceBOLLSeries = CHSeries.getBOLL(
             UIColor.ch_hex(0xDDDDDD),
             ubc: UIColor.ch_hex(0xF9EE30),
             lbc: UIColor.ch_hex(0xF600FF),
             section: priceSection)
-        
+
         priceBOLLSeries.hidden = true
-        
+
         let priceSARSeries = CHSeries.getSAR(
             upStyle: upcolor,
             downStyle: downcolor,
             titleColor: UIColor.ch_hex(0xDDDDDD),
             section: priceSection)
-        
+
         priceSARSeries.hidden = true
-        
+
         priceSection.series = [
             timelineSeries,
             priceSeries,
@@ -217,7 +219,7 @@ public extension CHKLineChartStyle {
             priceBOLLSeries,
             priceSARSeries
         ]
-        
+
         let volumeSection = CHSection()
         volumeSection.backgroundColor = style.backgroundColor
         volumeSection.valueType = .assistant
@@ -227,30 +229,30 @@ public extension CHKLineChartStyle {
         volumeSection.yAxis.tickInterval = 4
         volumeSection.padding = UIEdgeInsets(top: 16, left: 0, bottom: 8, right: 0)
         let volumeSeries = CHSeries.getDefaultVolume(upStyle: upcolor, downStyle: downcolor, section: volumeSection)
-        
+
         let volumeMASeries = CHSeries.getVolumeMA(
             isEMA: false,
-            num: [5,10,30],
+            num: [5, 10, 30],
             colors: [
                 UIColor.ch_hex(0xDDDDDD),
                 UIColor.ch_hex(0xF9EE30),
-                UIColor.ch_hex(0xF600FF),
+                UIColor.ch_hex(0xF600FF)
                 ],
             section: volumeSection)
-        
+
         let volumeEMASeries = CHSeries.getVolumeMA(
             isEMA: true,
-            num: [5,10,30],
+            num: [5, 10, 30],
             colors: [
                 UIColor.ch_hex(0xDDDDDD),
                 UIColor.ch_hex(0xF9EE30),
-                UIColor.ch_hex(0xF600FF),
+                UIColor.ch_hex(0xF600FF)
                 ],
             section: volumeSection)
-        
+
         volumeEMASeries.hidden = true
         volumeSection.series = [volumeSeries, volumeMASeries, volumeEMASeries]
-        
+
         let trendSection = CHSection()
         trendSection.backgroundColor = style.backgroundColor
         trendSection.valueType = .assistant
@@ -266,7 +268,7 @@ public extension CHKLineChartStyle {
             jc: UIColor.ch_hex(0xF600FF),
             section: trendSection)
         kdjSeries.title = "KDJ(9,3,3)"
-        
+
         let macdSeries = CHSeries.getMACD(
             UIColor.ch_hex(0xDDDDDD),
             deac: UIColor.ch_hex(0xF9EE30),
@@ -278,10 +280,9 @@ public extension CHKLineChartStyle {
         trendSection.series = [
             kdjSeries,
             macdSeries]
-        
+
         style.sections = [priceSection, volumeSection, trendSection]
-        
-        
+
         return style
     }
 }

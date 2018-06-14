@@ -14,22 +14,20 @@ public class CHChartImageGenerator: NSObject {
     public var values: [(Int, Double)] = [(Int, Double)]()
     public var chartView: CHKLineChartView!
     public var style: CHKLineChartStyle = CHKLineChartStyle.lineIMG
-    
-    
+
     /// 创建一个全局单例用于生成图表的截图
     public static let share: CHChartImageGenerator = {
         let generator = CHChartImageGenerator()
         return generator
     }()
-    
+
     public override init() {
         super.init()
         self.chartView = CHKLineChartView(frame: CGRect.zero)
         self.chartView.style = CHKLineChartStyle.lineIMG
         self.chartView.delegate = self
     }
-    
-    
+
     /// 通过 数据源，图表样式 生成一张图表截图
     ///
     /// - Parameters:
@@ -60,18 +58,15 @@ public class CHChartImageGenerator: NSObject {
         self.chartView.reloadData()
         return self.chartView.image
     }
-    
-}
 
+}
 
 // MARK: - 自定义风格
 extension CHKLineChartStyle {
-   
-    
+
     //实现一个点线简单图表用于图片显示
     public static var lineIMG: CHKLineChartStyle {
-        
-        
+
         let style = CHKLineChartStyle()
         //字体大小
         style.labelFont = UIFont.systemFont(ofSize: 10)
@@ -91,20 +86,19 @@ extension CHKLineChartStyle {
         style.showYAxisLabel = .none
         //是否显示X轴
         style.showXAxisLabel = false
-        
+
         //是否把所有点都显示
         style.isShowAll = true
         //禁止所有手势操作
         style.enablePan = false
         style.enableTap = false
         style.enablePinch = false
-        
-        
+
         //配置图表处理算法
         style.algorithms = [
             CHChartAlgorithm.timeline
         ]
-        
+
         let priceSection = CHSection()
         priceSection.backgroundColor = style.backgroundColor
         //分区上显示选中点的数据文字是否在分区外显示
@@ -123,7 +117,7 @@ extension CHKLineChartStyle {
         priceSection.yAxis.referenceStyle = .none
         //分区内边距
         priceSection.padding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        
+
         /// 时分线
         let timelineSeries = CHSeries.getTimelinePrice(
             color: UIColor.ch_hex(0xA4AAB3),
@@ -131,25 +125,23 @@ extension CHKLineChartStyle {
             showGuide: true,
             ultimateValueStyle: .none,
             lineWidth: 1)
-        
+
         priceSection.series = [timelineSeries]
-        
+
         style.sections = [priceSection]
-        
-        
+
         return style
     }
-    
-}
 
+}
 
 // MARK: - 实现委托方法
 extension CHChartImageGenerator: CHKLineChartDelegate {
-    
+
     public func numberOfPointsInKLineChart(chart: CHKLineChartView) -> Int {
         return self.values.count
     }
-    
+
     public func kLineChart(chart: CHKLineChartView, valueForPointAtIndex index: Int) -> CHChartItem {
         let data = self.values[index]
         let item = CHChartItem()
@@ -157,7 +149,7 @@ extension CHChartImageGenerator: CHKLineChartDelegate {
         item.closePrice = CGFloat(data.1)
         return item
     }
-    
+
     /// 调整Y轴标签宽度
     ///
     /// - parameter chart:
@@ -166,16 +158,16 @@ extension CHChartImageGenerator: CHKLineChartDelegate {
     public func widthForYAxisLabelInKLineChart(in chart: CHKLineChartView) -> CGFloat {
         return chart.kYAxisLabelWidth
     }
-    
+
     public func kLineChart(chart: CHKLineChartView, labelOnYAxisForValue value: CGFloat, atIndex index: Int, section: CHSection) -> String {
 //        let strValue = value.ch_toString(maxF: section.decimal)
         return ""
     }
-    
+
     public func kLineChart(chart: CHKLineChartView, labelOnXAxisForIndex index: Int) -> String {
         return ""
     }
-    
+
     public func heightForXAxisInKLineChart(in chart: CHKLineChartView) -> CGFloat {
         return 0
     }

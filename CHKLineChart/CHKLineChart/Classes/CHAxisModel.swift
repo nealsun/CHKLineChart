@@ -9,9 +9,6 @@
 import Foundation
 import UIKit
 
-
-
-
 /**
  Y轴显示的位置
  
@@ -38,7 +35,7 @@ public enum CHAxisReferenceStyle {
  *  Y轴数据模型
  */
 public struct CHYAxis {
-    
+
     public var max: CGFloat = 0                //Y轴的最大值
     public var min: CGFloat = 0                //Y轴的最小值
     public var ext: CGFloat = 0.00             //上下边界溢出值的比例
@@ -47,19 +44,19 @@ public struct CHYAxis {
     public var pos: Int = 0
     public var decimal: Int = 2                //约束小数位
     public var isUsed = false
-    
+
     /// 辅助线样式
     public var referenceStyle: CHAxisReferenceStyle = .dash(color: UIColor(white: 0.2, alpha: 1), pattern: [5])
-    
+
 }
 
 /**
  *  X轴数据模型
  */
 public struct CHXAxis {
-    
+
     public var tickInterval: Int = 6           //间断显示个数
-    
+
     /// 辅助线样式
     public var referenceStyle: CHAxisReferenceStyle = .none
 }
